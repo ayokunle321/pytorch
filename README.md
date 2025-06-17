@@ -1,3 +1,3 @@
-# Pytorch 
+# pytorch 
 
-A repo for learning the pytorch framework. 
+A repo for learning and experimenting with the pytorch framework.

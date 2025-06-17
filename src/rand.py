@@ -38,7 +38,7 @@ print(f"Using {device} device")
 # Define model 
 class NeuralNetwork(nn.Module):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.flatten = nn.Flatten() # turn input matrix to a 1D array
         self.linear_relu_stack = nn.Sequential( # layers are stacked in order
             nn.Linear(28*28, 512),
@@ -55,3 +55,25 @@ class NeuralNetwork(nn.Module):
     
 model = NeuralNetwork().to(device)
 print(model)
+
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+
+def train(dataloader, model, loss_fn, optimizer):
+    size = len(dataloader.dataset)
+    model.train()
+    for batch, (X, y) in enumerate(dataloader):
+        X, y = X.to(device), y.to(device)
+
+        # Compute prediction error
+        pred = model(X)
+        loss = loss_fn(pred, y)
+
+        # Backpropagation 
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+        if batch % 100 == 0:
+            loss, current = loss.item(), (batch + 1) * len(X)
+            print(f"loss: {loss:>7f} [{current:>5d}/{size:>5d}]")
